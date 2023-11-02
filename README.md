@@ -21,7 +21,7 @@ pip install git+ssh://git@github.com/bertoldi-collab/tracking-markers.git@main
 
 ### CLI
 
-Just run
+Run in a terminal
 
 ```bash
 tracking-markers path/to/video.mp4
