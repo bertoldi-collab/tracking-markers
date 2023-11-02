@@ -5,6 +5,10 @@
 This is a humble image tracking code.
 It is humble because it does what it can.
 
+<p align="center">
+  <img width="460" height="300" src="examples/spaceman.gif">
+</p>
+
 ## Installation
 
 Assuming you have access to the repo and ssh keys are set up in your GitHub account, you can install the package with
