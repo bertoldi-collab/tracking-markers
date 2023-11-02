@@ -1,5 +1,7 @@
 # A humble image tracking code
 
+![Made with Python](https://img.shields.io/badge/Made%20with-Python-blue?logo=python&logoColor=ecf0f1&labelColor=34495e)
+
 This is a humble image tracking code.
 It is humble because it does what it can.
 
