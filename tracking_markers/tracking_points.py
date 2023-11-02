@@ -177,11 +177,10 @@ def track_points(
     return markers_history
 
 
-if __name__ == '__main__':
-
+def main():
     parser = argparse.ArgumentParser(
         prog="tracking_points.py",
-        description="Track markers in a video file using cross-correlation of a template around the marker position."
+        description="Track markers in a video file using cross-correlation of a template around the markers."
     )
     parser.add_argument("video_path", type=str, help="Path to the video file.")
     parser.add_argument("-r", "--frame_range", type=int, default=(0, -1), nargs=2,
@@ -240,3 +239,8 @@ if __name__ == '__main__':
         out_path = Path(args.out_path)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         np.save(out_path, markers_history)
+
+
+# entrypoint for cli invocation
+if __name__ == '__main__':
+    main()
