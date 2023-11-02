@@ -1,0 +1,23 @@
+[tool.poetry]
+name        = "tracking-markers"
+version     = "0.1.0"
+description = "A humble image tracking code"
+authors     = ["Giovanni Bordiga <gbordiga@seas.harvard.edu>"]
+readme      = "README.md"
+homepage    = "https://github.com/bertoldi-collab/tracking-markers"
+repository  = "https://github.com/bertoldi-collab/tracking-markers"
+keywords    = ["image-tracking", "opencv"]
+packages    = [{ include = "tracking_markers" }]
+
+[tool.poetry.dependencies]
+python        = ">=3.9,<3.13"
+numpy         = "^1.26.1"
+opencv-python = "^4.8.1.78"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+
+[build-system]
+requires      = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
