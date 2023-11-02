@@ -9,6 +9,9 @@ repository  = "https://github.com/bertoldi-collab/tracking-markers"
 keywords    = ["image-tracking", "opencv"]
 packages    = [{ include = "tracking_markers" }]
 
+[tool.poetry.scripts]
+tracking-markers = "tracking_markers.tracking_points:main"
+
 [tool.poetry.dependencies]
 python        = ">=3.9,<3.13"
 numpy         = "^1.26.1"
