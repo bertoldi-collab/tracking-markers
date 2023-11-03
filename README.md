@@ -31,7 +31,7 @@ See `tracking-markers --help` for more info on all the options.
 
 ### Python
 
-The main module is [`tracking_points.py`](tracking_markers/tracking_points.py) defining the `track_points(...)` function that actually does the tracking of given video and the function `select_markers(...)` that allows for manual selection of markers.
+The main module is [`tracking_points.py`](tracking_markers/tracking_points.py) defining the `track_points(...)` function that actually does the tracking of a given video and the function `select_markers(...)` that allows the manual selection of markers.
 These functions can be used independently.
 The file [`tracking_points.py`](tracking_markers/tracking_points.py) can also be used as a script.
 
