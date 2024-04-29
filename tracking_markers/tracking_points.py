@@ -88,7 +88,7 @@ def track_points(
     cap = cv2.VideoCapture(video_path)
     frame_start, frame_end = frame_range
     frame_number = frame_start
-    frame_end = frame_end if frame_end > 0 else int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    frame_end = frame_end if frame_end > 0 else int(cap.get(cv2.CAP_PROP_FRAME_COUNT))-1
 
     if show_tracked_frame:
         cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
