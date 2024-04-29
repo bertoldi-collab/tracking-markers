@@ -37,7 +37,7 @@ def select_markers(video_path: str, frame=0, ROI_X=(0, -1), ROI_Y=(0, -1)):
             markers.append((x, y))
             cv2.drawMarker(frame, (x, y), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
 
-    cv2.namedWindow('Select Markers')
+    cv2.namedWindow('Select Markers', cv2.WINDOW_NORMAL)
     cv2.setMouseCallback('Select Markers', mouse_callback)
 
     print("Select markers by clicking on the image. Press 'q' to finish.")
@@ -89,6 +89,9 @@ def track_points(
     frame_start, frame_end = frame_range
     frame_number = frame_start
     frame_end = frame_end if frame_end > 0 else int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    if show_tracked_frame:
+        cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
 
     # Initialize the positions of the markers
     template_markers = np.array(markers).astype(np.float64)
