@@ -4,6 +4,7 @@ version     = "0.2.0"
 description = "A humble image tracking code"
 authors     = ["Giovanni Bordiga <gbordiga@seas.harvard.edu>"]
 readme      = "README.md"
+license     = "MIT"
 homepage    = "https://github.com/bertoldi-collab/tracking-markers"
 repository  = "https://github.com/bertoldi-collab/tracking-markers"
 keywords    = ["image-tracking", "opencv"]
