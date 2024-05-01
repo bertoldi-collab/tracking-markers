@@ -31,7 +31,7 @@ pip install git+ssh://git@github.com/bertoldi-collab/tracking-markers.git@main
 Or clone the repository and install with
 
 ```bash
-git clone
+git clone git@github.com:bertoldi-collab/tracking-markers.git
 cd tracking-markers
 pip install -e .
 ```
