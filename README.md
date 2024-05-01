@@ -16,10 +16,24 @@ It is humble because it does what it can.
 
 ## Installation
 
-Assuming you have access to the repo and ssh keys are set up in your GitHub account, you can install the package with
+Intall latest version directly from PyPI with
+
+```bash
+pip install tracking-markers
+```
+
+Or install from this repository (assuming you have access to the repo and ssh keys are set up in your GitHub account) with
 
 ```bash
 pip install git+ssh://git@github.com/bertoldi-collab/tracking-markers.git@main
+```
+
+Or clone the repository and install with
+
+```bash
+git clone
+cd tracking-markers
+pip install -e .
 ```
 
 ## How to use
