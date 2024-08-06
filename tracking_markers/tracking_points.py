@@ -208,9 +208,9 @@ def main():
     parser.add_argument("-u", "--upscaling_factor", type=int, default=upscaling_factor_default,
                         help="Upscaling factor for the marker template. Defaults to 5.")
     parser.add_argument("-tr", "--template_update_rate", type=int, default=0,
-                        help="Rate at which the template is updated. Default is 0 (i.e. no update).")
+                        help="Rate at which the template is updated in number of steps. Default is 0 (i.e. no update).")
     parser.add_argument("-wr", "--search_window_update_rate", type=int, default=1,
-                        help="Rate at which the search window is updated. Defaults to 1.")
+                        help="Rate at which the search window is updated in number of steps. Defaults to 1.")
     parser.add_argument("-ht", "--hide_tracked_frame", action="store_true",
                         default=False, help="Do not show the tracked frame.")
     parser.add_argument("-s", "--save", action="store_true", default=False)
