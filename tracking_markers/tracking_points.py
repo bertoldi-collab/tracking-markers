@@ -77,8 +77,8 @@ def track_points(
         search_window_size (int, optional): Size of the search window. Default is 40px.
         marker_template_size (int, optional): Size of the marker template. Default is 20px.
         upscaling_factor (int, optional): Upscaling factor for the marker template. Defaults to 5.
-        template_update_rate (int, optional): Rate at which the template is updated. Default is 0 (i.e. no update).
-        search_window_update_rate (int, optional): Rate at which the search window is updated. Defaults to 1.
+        template_update_rate (int, optional): Rate at which the template is updated in number of steps. Default is 0 (i.e. no update).
+        search_window_update_rate (int, optional): Rate at which the search window is updated in number of steps. Defaults to 1.
         show_tracked_frame (bool, optional): Whether to show the tracked frame. Defaults to True.
 
     Returns:
@@ -148,12 +148,12 @@ def track_points(
             markers_history[(frame_number - frame_start)//step_size] = current_markers
 
             # Update the template frame
-            if template_update_rate != 0 and cap.get(cv2.CAP_PROP_POS_FRAMES) % template_update_rate == 0:
+            if template_update_rate != 0 and ((frame_number - frame_start)//step_size) % template_update_rate == 0:
                 template_frame = current_frame.copy()
                 template_markers = current_markers.copy()
 
             # Update the search window
-            if search_window_update_rate != 0 and cap.get(cv2.CAP_PROP_POS_FRAMES) % search_window_update_rate == 0:
+            if search_window_update_rate != 0 and ((frame_number - frame_start)//step_size) % search_window_update_rate == 0:
                 search_markers = current_markers.copy()
 
             if show_tracked_frame:
