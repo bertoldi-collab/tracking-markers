@@ -88,7 +88,8 @@ def track_points(
     cap = cv2.VideoCapture(video_path)
     frame_start, frame_end = frame_range
     frame_number = frame_start
-    frame_end = frame_end if frame_end > 0 else int(cap.get(cv2.CAP_PROP_FRAME_COUNT))-1
+    frame_end = frame_end if frame_end > 0 else int(
+        cap.get(cv2.CAP_PROP_FRAME_COUNT))-1
 
     if show_tracked_frame:
         cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
@@ -112,7 +113,8 @@ def track_points(
     current_frame = gray_frame.copy()
 
     # Initialize the history of the markers
-    markers_history = np.zeros(((frame_end - frame_start) // step_size + 1, len(markers), 2))
+    markers_history = np.zeros(
+        ((frame_end - frame_start) // step_size + 1, len(markers), 2))
 
     while cap.isOpened():
         # Read the frame
@@ -130,7 +132,8 @@ def track_points(
 
             # Flip y-axis in image to match physical frame.
             frame = cv2.flip(frame, 0)
-            frame = frame[ROI_XY[1][0]: ROI_XY[1][1], ROI_XY[0][0]: ROI_XY[0][1]]
+            frame = frame[ROI_XY[1][0]: ROI_XY[1]
+                          [1], ROI_XY[0][0]: ROI_XY[0][1]]
             # Convert the frame to grayscale
             current_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -145,7 +148,8 @@ def track_points(
                 upscaling_factor=upscaling_factor
             )
             # Record the marker positions
-            markers_history[(frame_number - frame_start)//step_size] = current_markers
+            markers_history[(frame_number - frame_start) //
+                            step_size] = current_markers
 
             # Update the template frame
             if template_update_rate != 0 and ((frame_number - frame_start)//step_size) % template_update_rate == 0:
@@ -159,7 +163,8 @@ def track_points(
             if show_tracked_frame:
                 # Draw the markers on the frame
                 for marker_position in current_markers:
-                    cv2.drawMarker(frame, marker_position.astype(np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
+                    cv2.drawMarker(frame, marker_position.astype(
+                        np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
                 # Show the frame and wait for key press
                 cv2.imshow('Frame', frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -209,7 +214,8 @@ def main():
     parser.add_argument("-ht", "--hide_tracked_frame", action="store_true",
                         default=False, help="Do not show the tracked frame.")
     parser.add_argument("-s", "--save", action="store_true", default=False)
-    parser.add_argument("-o", "--out_path", type=str, default="markers_history.npy")
+    parser.add_argument("-o", "--out_path", type=str,
+                        default="markers_history.npy")
     args = parser.parse_args()
 
     if args.markers_path is not None:
@@ -217,7 +223,8 @@ def main():
         markers = np.load(args.markers_path)
     else:
         # Manually select the markers
-        markers = select_markers(args.video_path, frame=args.frame_range[0], ROI_X=args.ROI_X, ROI_Y=args.ROI_Y)
+        markers = select_markers(
+            args.video_path, frame=args.frame_range[0], ROI_X=args.ROI_X, ROI_Y=args.ROI_Y)
 
     if len(markers) == 0:
         raise ValueError("No markers selected!")
