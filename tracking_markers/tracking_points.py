@@ -64,6 +64,7 @@ def track_points(
         template_update_rate=0,
         search_window_update_rate=1,
         # Parameters for visualization
+        print_frame_number=True,
         show_tracked_frame=True,):
     """Track markers in a video.
 
@@ -79,6 +80,7 @@ def track_points(
         upscaling_factor (int, optional): Upscaling factor for the marker template. Defaults to 5.
         template_update_rate (int, optional): Rate at which the template is updated in number of steps. Default is 0 (i.e. no update).
         search_window_update_rate (int, optional): Rate at which the search window is updated in number of steps. Defaults to 1.
+        print_frame_number (bool, optional): Whether to print the frame number. Defaults to True.
         show_tracked_frame (bool, optional): Whether to show the tracked frame. Defaults to True.
 
     Returns:
@@ -127,8 +129,9 @@ def track_points(
 
         if ret and frame_number <= frame_end:
 
-            # Print frame number
-            print(f"Frame #{int(cap.get(cv2.CAP_PROP_POS_FRAMES))}")
+            if print_frame_number:
+                # Print frame number
+                print(f"Frame #{int(cap.get(cv2.CAP_PROP_POS_FRAMES))}")
 
             # Flip y-axis in image to match physical frame.
             frame = cv2.flip(frame, 0)
@@ -211,6 +214,7 @@ def main():
                         help="Rate at which the template is updated in number of steps. Default is 0 (i.e. no update).")
     parser.add_argument("-wr", "--search_window_update_rate", type=int, default=1,
                         help="Rate at which the search window is updated in number of steps. Defaults to 1.")
+    parser.add_argument("-hn", "--hide_frame_number", action="store_true", default=False, help="Do not print the frame number.")
     parser.add_argument("-ht", "--hide_tracked_frame", action="store_true",
                         default=False, help="Do not show the tracked frame.")
     parser.add_argument("-s", "--save", action="store_true", default=False)
@@ -241,6 +245,7 @@ def main():
         upscaling_factor=args.upscaling_factor,
         template_update_rate=args.template_update_rate,
         search_window_update_rate=args.search_window_update_rate,
+        print_frame_number=not args.hide_frame_number,
         show_tracked_frame=not args.hide_tracked_frame
     )
 
