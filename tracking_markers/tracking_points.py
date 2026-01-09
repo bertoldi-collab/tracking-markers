@@ -219,8 +219,7 @@ def main():
     parser.add_argument("-ht", "--hide_tracked_frame", action="store_true",
                         default=False, help="Do not show the tracked frame.")
     parser.add_argument("-s", "--save", action="store_true", default=False)
-    parser.add_argument("-o", "--out_path", type=str,
-                        default="markers_history.npy")
+    parser.add_argument("-o", "--out_path", type=str, default="markers_history.npy")
     args = parser.parse_args()
 
     if args.markers_path is not None:
