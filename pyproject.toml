@@ -17,6 +17,7 @@ tracking-markers = "tracking_markers.tracking_points:main"
 python        = ">=3.9,<3.13"
 numpy         = "^1.26.1"
 opencv-python = "^4.8.1.78"
+tqdm          = "^4.67.1"
 
 
 [tool.poetry.group.dev.dependencies]
