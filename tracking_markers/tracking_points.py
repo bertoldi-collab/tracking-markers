@@ -176,8 +176,8 @@ def track_points(
 
                 # Update the frame number
                 frame_number += 1
+                progress_bar.set_postfix(dict(frame=frame_number), refresh=False)
                 progress_bar.update(1)
-                progress_bar.set_postfix(frame=frame_number)
             else:
                 cap.release()
                 break
