@@ -1,8 +1,10 @@
+from typing import Union
 import cv2
 import numpy as np
 from tracking_markers.utils import find_markers, search_window_size_default, marker_template_size_default, upscaling_factor_default, step_size_default
 import argparse
 from pathlib import Path
+from tqdm import tqdm
 
 
 def select_markers(video_path: str, frame=0, ROI_X=(0, -1), ROI_Y=(0, -1)):
@@ -64,7 +66,7 @@ def track_points(
         template_update_rate=0,
         search_window_update_rate=1,
         # Parameters for visualization
-        print_frame_number=True,
+        show_progress_bar=True,
         show_tracked_frame=True,):
     """Track markers in a video.
 
@@ -80,7 +82,7 @@ def track_points(
         upscaling_factor (int, optional): Upscaling factor for the marker template. Defaults to 5.
         template_update_rate (int, optional): Rate at which the template is updated in number of steps. Default is 0 (i.e. no update).
         search_window_update_rate (int, optional): Rate at which the search window is updated in number of steps. Defaults to 1.
-        print_frame_number (bool, optional): Whether to print the frame number. Defaults to True.
+        show_progress_bar (bool, optional): Whether to show the progress bar. Defaults to True.
         show_tracked_frame (bool, optional): Whether to show the tracked frame. Defaults to True.
 
     Returns:
@@ -119,70 +121,68 @@ def track_points(
     markers_history = np.zeros(
         ((frame_end - frame_start) // step_size + 1, len(markers), 2))
 
-    while cap.isOpened():
-        # Read the frame
-        ret, frame = cap.read()
+    with tqdm(total=markers_history.shape[0], desc=f"Processing {video_path.name}", unit=f"step", disable=not show_progress_bar) as progress_bar:
+        while cap.isOpened():
+            # Read the frame
+            ret, frame = cap.read()
 
-        # Skip frame according to step size
-        if (frame_number - frame_start) % step_size != 0:
-            frame_number += 1
-            continue
+            # Skip frame according to step size
+            if (frame_number - frame_start) % step_size != 0:
+                frame_number += 1
+                continue
 
-        if ret and frame_number <= frame_end:
+            if ret and frame_number <= frame_end:
 
-            if print_frame_number:
-                # Print frame number
-                print(f"Frame #{int(cap.get(cv2.CAP_PROP_POS_FRAMES))}")
+                # Flip y-axis in image to match physical frame.
+                frame = cv2.flip(frame, 0)
+                frame = frame[ROI_XY[1][0]: ROI_XY[1]
+                              [1], ROI_XY[0][0]: ROI_XY[0][1]]
+                # Convert the frame to grayscale
+                current_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            # Flip y-axis in image to match physical frame.
-            frame = cv2.flip(frame, 0)
-            frame = frame[ROI_XY[1][0]: ROI_XY[1]
-                          [1], ROI_XY[0][0]: ROI_XY[0][1]]
-            # Convert the frame to grayscale
-            current_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                # Compute current marker positions
+                current_markers = find_markers(
+                    template_frame,
+                    current_frame,
+                    template_markers,  # Used for extracting templates around the markers in the template frame
+                    search_markers,  # Used for placing the search window around the markers in the current frame
+                    search_window_size=search_window_size,
+                    marker_template_size=marker_template_size,
+                    upscaling_factor=upscaling_factor
+                )
+                # Record the marker positions
+                markers_history[(frame_number - frame_start) //
+                                step_size] = current_markers
 
-            # Compute current marker positions
-            current_markers = find_markers(
-                template_frame,
-                current_frame,
-                template_markers,  # Used for extracting templates around the markers in the template frame
-                search_markers,  # Used for placing the search window around the markers in the current frame
-                search_window_size=search_window_size,
-                marker_template_size=marker_template_size,
-                upscaling_factor=upscaling_factor
-            )
-            # Record the marker positions
-            markers_history[(frame_number - frame_start) //
-                            step_size] = current_markers
+                # Update the template frame
+                if template_update_rate != 0 and ((frame_number - frame_start)//step_size) % template_update_rate == 0:
+                    template_frame = current_frame.copy()
+                    template_markers = current_markers.copy()
 
-            # Update the template frame
-            if template_update_rate != 0 and ((frame_number - frame_start)//step_size) % template_update_rate == 0:
-                template_frame = current_frame.copy()
-                template_markers = current_markers.copy()
+                # Update the search window
+                if search_window_update_rate != 0 and ((frame_number - frame_start)//step_size) % search_window_update_rate == 0:
+                    search_markers = current_markers.copy()
 
-            # Update the search window
-            if search_window_update_rate != 0 and ((frame_number - frame_start)//step_size) % search_window_update_rate == 0:
-                search_markers = current_markers.copy()
+                if show_tracked_frame:
+                    # Draw the markers on the frame
+                    for marker_position in current_markers:
+                        cv2.drawMarker(frame, marker_position.astype(
+                            np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
+                    # Show the frame and wait for key press
+                    cv2.imshow('Frame', frame)
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
+                else:
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
 
-            if show_tracked_frame:
-                # Draw the markers on the frame
-                for marker_position in current_markers:
-                    cv2.drawMarker(frame, marker_position.astype(
-                        np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
-                # Show the frame and wait for key press
-                cv2.imshow('Frame', frame)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+                # Update the frame number
+                frame_number += 1
+                progress_bar.update(1)
+                progress_bar.set_postfix(frame=frame_number)
             else:
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
-
-            # Update the frame number
-            frame_number += 1
-
-        else:
-            cap.release()
-            break
+                cap.release()
+                break
 
     cv2.destroyAllWindows()
 
@@ -215,8 +215,8 @@ def main():
                         help="Rate at which the template is updated in number of steps. Default is 0 (i.e. no update).")
     parser.add_argument("-wr", "--search_window_update_rate", type=int, default=1,
                         help="Rate at which the search window is updated in number of steps. Defaults to 1.")
-    parser.add_argument("-hn", "--hide_frame_number", action="store_true",
-                        default=False, help="Do not print the frame number.")
+    parser.add_argument("-hb", "--hide_progress_bar", action="store_true",
+                        default=False, help="Do not show progress bar.")
     parser.add_argument("-hf", "--hide_tracked_frame", action="store_true",
                         default=False, help="Do not show the tracked frame.")
     parser.add_argument("-s", "--save", action="store_true", default=False)
@@ -246,7 +246,7 @@ def main():
         upscaling_factor=args.upscaling_factor,
         template_update_rate=args.template_update_rate,
         search_window_update_rate=args.search_window_update_rate,
-        print_frame_number=not args.hide_frame_number,
+        show_progress_bar=not args.hide_progress_bar,
         show_tracked_frame=not args.hide_tracked_frame
     )
 
