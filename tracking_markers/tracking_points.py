@@ -165,8 +165,7 @@ def track_points(
                 if show_tracked_frame:
                     # Draw the markers on the frame
                     for marker_position in current_markers:
-                        cv2.drawMarker(frame, marker_position.astype(
-                            np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
+                        cv2.drawMarker(frame, marker_position.astype(np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
                     # Show the frame and wait for key press
                     cv2.imshow('Frame', frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
