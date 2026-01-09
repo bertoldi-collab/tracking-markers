@@ -214,7 +214,8 @@ def main():
                         help="Rate at which the template is updated in number of steps. Default is 0 (i.e. no update).")
     parser.add_argument("-wr", "--search_window_update_rate", type=int, default=1,
                         help="Rate at which the search window is updated in number of steps. Defaults to 1.")
-    parser.add_argument("-hn", "--hide_frame_number", action="store_true", default=False, help="Do not print the frame number.")
+    parser.add_argument("-hn", "--hide_frame_number", action="store_true",
+                        default=False, help="Do not print the frame number.")
     parser.add_argument("-ht", "--hide_tracked_frame", action="store_true",
                         default=False, help="Do not show the tracked frame.")
     parser.add_argument("-s", "--save", action="store_true", default=False)
