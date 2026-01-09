@@ -51,7 +51,7 @@ def select_markers(video_path: str, frame=0, ROI_X=(0, -1), ROI_Y=(0, -1)):
 
 
 def track_points(
-        video_path: str,
+        video_path: Union[str, Path],
         markers: np.ndarray,
         ROI_X=(0, -1),
         ROI_Y=(0, -1),
@@ -69,7 +69,7 @@ def track_points(
     """Track markers in a video.
 
     Args:
-        video_path (str): Path to the video file.
+        video_path (Union[str, Path]): Path to the video file.
         markers (np.ndarray): Array of shape (n_markers, 2) containing the initial marker positions in pixels.
         ROI_X (tuple[int, int], optional): ROI in the x-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
         ROI_Y (tuple[int, int], optional): ROI in the y-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
@@ -87,7 +87,8 @@ def track_points(
         np.ndarray: Array of shape (n_frames, n_markers, 2) containing the marker positions for each frame in pixels.
     """
 
-    cap = cv2.VideoCapture(video_path)
+    video_path = Path(video_path) if isinstance(video_path, str) else video_path
+    cap = cv2.VideoCapture(str(video_path))
     frame_start, frame_end = frame_range
     frame_number = frame_start
     frame_end = frame_end if frame_end > 0 else int(
