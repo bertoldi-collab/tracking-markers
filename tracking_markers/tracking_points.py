@@ -239,7 +239,7 @@ def main():
     parser.add_argument("-s", "--save", action="store_true", default=False)
     parser.add_argument("-o", "--out_path", type=str, default="markers_history.npy")
     parser.add_argument("-sa", "--save_animation", type=str, default=None,
-                        help="Path to save the animation of the tracked video.")
+                        help="Path to save the animation of the tracked video e.g. tracked_video.mp4.")
     args = parser.parse_args()
 
     if args.markers_path is not None:
