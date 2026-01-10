@@ -177,21 +177,15 @@ def track_points(
                     for marker_position in current_markers:
                         cv2.drawMarker(frame, marker_position.astype(np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
 
-                    if show_tracked_frame:
-                        # Show the frame and wait for key press
-                        cv2.imshow('Frame', frame)
-                        if cv2.waitKey(1) & 0xFF == ord('q'):
-                            break
-                    else:
-                        if cv2.waitKey(1) & 0xFF == ord('q'):
-                            break
+                if show_tracked_frame:
+                    cv2.imshow('Frame', frame)
 
-                    if video_writer is not None:
-                        # Write the frame to the video (flipping y-axis back for correct orientation)
-                        video_writer.write(cv2.flip(frame, 0))
-                else:
-                    if cv2.waitKey(1) & 0xFF == ord('q'):
-                        break
+                if video_writer is not None:
+                    # Write the frame to the video (flipping y-axis back for correct orientation)
+                    video_writer.write(cv2.flip(frame, 0))
+
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
 
                 # Update the frame number
                 frame_number += 1
