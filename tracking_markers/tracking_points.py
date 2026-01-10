@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 import cv2
 import numpy as np
 from tracking_markers.utils import find_markers, search_window_size_default, marker_template_size_default, upscaling_factor_default, step_size_default
@@ -67,7 +67,8 @@ def track_points(
         search_window_update_rate=1,
         # Parameters for visualization
         show_progress_bar=True,
-        show_tracked_frame=True,):
+        show_tracked_frame=True,
+        save_animation_path: Optional[Union[str, Path]] = None):
     """Track markers in a video.
 
     Args:
@@ -84,6 +85,7 @@ def track_points(
         search_window_update_rate (int, optional): Rate at which the search window is updated in number of steps. Defaults to 1.
         show_progress_bar (bool, optional): Whether to show the progress bar. Defaults to True.
         show_tracked_frame (bool, optional): Whether to show the tracked frame. Defaults to True.
+        save_animation_path (Union[str, Path], optional): Path to save the animation of the tracked video. Defaults to None.
 
     Returns:
         np.ndarray: Array of shape (n_frames, n_markers, 2) containing the marker positions for each frame in pixels.
@@ -112,6 +114,14 @@ def track_points(
     flipped_ROI_Y = (frame.shape[0] - ROI_Y[1], frame.shape[0] - ROI_Y[0])
     ROI_XY = (ROI_X, flipped_ROI_Y)
     frame = frame[ROI_XY[1][0]: ROI_XY[1][1], ROI_XY[0][0]: ROI_XY[0][1]]
+
+    video_writer = None
+    if save_animation_path is not None:
+        height, width = frame.shape[:2]
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        video_writer = cv2.VideoWriter(str(save_animation_path), fourcc, fps, (width, height))
+
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     template_frame = gray_frame.copy()
     current_frame = gray_frame.copy()
@@ -162,14 +172,23 @@ def track_points(
                 if search_window_update_rate != 0 and ((frame_number - frame_start)//step_size) % search_window_update_rate == 0:
                     search_markers = current_markers.copy()
 
-                if show_tracked_frame:
+                if show_tracked_frame or (video_writer is not None):
                     # Draw the markers on the frame
                     for marker_position in current_markers:
                         cv2.drawMarker(frame, marker_position.astype(np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
-                    # Show the frame and wait for key press
-                    cv2.imshow('Frame', frame)
-                    if cv2.waitKey(1) & 0xFF == ord('q'):
-                        break
+
+                    if show_tracked_frame:
+                        # Show the frame and wait for key press
+                        cv2.imshow('Frame', frame)
+                        if cv2.waitKey(1) & 0xFF == ord('q'):
+                            break
+                    else:
+                        if cv2.waitKey(1) & 0xFF == ord('q'):
+                            break
+
+                    if video_writer is not None:
+                        # Write the frame to the video (flipping y-axis back for correct orientation)
+                        video_writer.write(cv2.flip(frame, 0))
                 else:
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
@@ -182,6 +201,8 @@ def track_points(
                 cap.release()
                 break
 
+    if video_writer is not None:
+        video_writer.release()
     cv2.destroyAllWindows()
 
     return markers_history
@@ -219,6 +240,8 @@ def main():
                         default=False, help="Do not show the tracked frame.")
     parser.add_argument("-s", "--save", action="store_true", default=False)
     parser.add_argument("-o", "--out_path", type=str, default="markers_history.npy")
+    parser.add_argument("-sa", "--save_animation", type=str, default=None,
+                        help="Path to save the animation of the tracked video.")
     args = parser.parse_args()
 
     if args.markers_path is not None:
@@ -245,7 +268,8 @@ def main():
         template_update_rate=args.template_update_rate,
         search_window_update_rate=args.search_window_update_rate,
         show_progress_bar=not args.hide_progress_bar,
-        show_tracked_frame=not args.hide_tracked_frame
+        show_tracked_frame=not args.hide_tracked_frame,
+        save_animation_path=args.save_animation
     )
 
     if args.save:
