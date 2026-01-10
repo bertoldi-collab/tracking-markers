@@ -117,6 +117,10 @@ def track_points(
 
     video_writer = None
     if save_animation_path is not None:
+        # Ensure the output directory exists
+        save_animation_path = Path(save_animation_path)
+        save_animation_path.parent.mkdir(parents=True, exist_ok=True)
+        # Initialize the video writer
         height, width = frame.shape[:2]
         fps = cap.get(cv2.CAP_PROP_FPS)
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
