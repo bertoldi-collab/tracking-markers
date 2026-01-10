@@ -251,6 +251,7 @@ def main():
 
     if len(markers) == 0:
         raise ValueError("No markers selected!")
+
     # Track the markers
     markers_history = track_points(
         args.video_path,
