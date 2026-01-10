@@ -236,7 +236,8 @@ def main():
                         default=False, help="Do not show progress bar.")
     parser.add_argument("-hf", "--hide_tracked_frame", action="store_true",
                         default=False, help="Do not show the tracked frame.")
-    parser.add_argument("-s", "--save", action="store_true", default=False)
+    parser.add_argument("-s", "--save", action="store_true", default=False,
+                        help="Whether to save the markers history to a .npy file.")
     parser.add_argument("-o", "--out_path", type=str, default="markers_history.npy")
     parser.add_argument("-sa", "--save_animation", type=str, default=None,
                         help="Path to save the animation of the tracked video e.g. tracked_video.mp4.")
