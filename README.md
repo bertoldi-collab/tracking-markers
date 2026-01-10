@@ -23,7 +23,7 @@ Intall latest version directly from PyPI with
 pip install tracking-markers
 ```
 
-Or install from this repository (assuming you have access to the repo and ssh keys are set up in your GitHub account) with
+Or install from this repository (assuming your ssh keys are set up in your GitHub account) with
 
 ```bash
 pip install git+ssh://git@github.com/bertoldi-collab/tracking-markers.git@main
