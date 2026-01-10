@@ -247,8 +247,7 @@ def main():
         markers = np.load(args.markers_path)
     else:
         # Manually select the markers
-        markers = select_markers(
-            args.video_path, frame=args.frame_range[0], ROI_X=args.ROI_X, ROI_Y=args.ROI_Y)
+        markers = select_markers(args.video_path, frame=args.frame_range[0], ROI_X=args.ROI_X, ROI_Y=args.ROI_Y)
 
     if len(markers) == 0:
         raise ValueError("No markers selected!")
