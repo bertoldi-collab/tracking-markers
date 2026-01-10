@@ -85,7 +85,7 @@ def track_points(
         search_window_update_rate (int, optional): Rate at which the search window is updated in number of steps. Defaults to 1.
         show_progress_bar (bool, optional): Whether to show the progress bar. Defaults to True.
         show_tracked_frame (bool, optional): Whether to show the tracked frame. Defaults to True.
-        save_animation_path (Union[str, Path], optional): Path to save the animation of the tracked video. Defaults to None.
+        save_animation_path (Union[str, Path], optional): Path to save the animation of the tracked video. Defaults to None i.e. no animation is saved.
 
     Returns:
         np.ndarray: Array of shape (n_frames, n_markers, 2) containing the marker positions for each frame in pixels.
