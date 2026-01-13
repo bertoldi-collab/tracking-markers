@@ -68,7 +68,8 @@ def track_points(
         # Parameters for visualization
         show_progress_bar=True,
         show_tracked_frame=True,
-        save_animation_path: Optional[Union[str, Path]] = None):
+        show_tracked_box=False,
+        save_animation_path: Optional[Union[str, Path]] = None,) -> np.ndarray:
     """Track markers in a video.
 
     Args:
@@ -85,6 +86,7 @@ def track_points(
         search_window_update_rate (int, optional): Rate at which the search window is updated in number of steps. Defaults to 1.
         show_progress_bar (bool, optional): Whether to show the progress bar. Defaults to True.
         show_tracked_frame (bool, optional): Whether to show the tracked frame. Defaults to True.
+        show_tracked_box (bool, optional): Whether to show the tracked box around the markers. Defaults to False.
         save_animation_path (Union[str, Path], optional): Path to save the animation of the tracked video. Defaults to None i.e. no animation is saved.
 
     Returns:
@@ -180,6 +182,27 @@ def track_points(
                     # Draw the markers on the frame
                     for marker_position in current_markers:
                         cv2.drawMarker(frame, marker_position.astype(np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
+                        if show_tracked_box:
+                            # Draw the search window box
+                            top_left = (
+                                int(marker_position[0] - search_window_size // 2),
+                                int(marker_position[1] - search_window_size // 2),
+                            )
+                            bottom_right = (
+                                int(marker_position[0] + search_window_size // 2),
+                                int(marker_position[1] + search_window_size // 2),
+                            )
+                            cv2.rectangle(frame, top_left, bottom_right, (255, 0, 0), 2)
+                            # Draw the marker template box
+                            top_left = (
+                                int(marker_position[0] - marker_template_size // 2),
+                                int(marker_position[1] - marker_template_size // 2),
+                            )
+                            bottom_right = (
+                                int(marker_position[0] + marker_template_size // 2),
+                                int(marker_position[1] + marker_template_size // 2),
+                            )
+                            cv2.rectangle(frame, top_left, bottom_right, (0, 0, 255), 2)
 
                 if show_tracked_frame:
                     cv2.imshow('Frame', frame)
@@ -236,6 +259,8 @@ def main():
                         default=False, help="Do not show progress bar.")
     parser.add_argument("-hf", "--hide_tracked_frame", action="store_true",
                         default=False, help="Do not show the tracked frame.")
+    parser.add_argument("-sb", "--show_tracked_box", action="store_true",
+                        default=False, help="Show the tracked box around the markers.")
     parser.add_argument("-s", "--save", action="store_true", default=False,
                         help="Whether to save the markers history to a .npy file.")
     parser.add_argument("-o", "--out_path", type=str, default="markers_history.npy")
@@ -268,6 +293,7 @@ def main():
         search_window_update_rate=args.search_window_update_rate,
         show_progress_bar=not args.hide_progress_bar,
         show_tracked_frame=not args.hide_tracked_frame,
+        show_tracked_box=args.show_tracked_box,
         save_animation_path=args.save_animation
     )
 
