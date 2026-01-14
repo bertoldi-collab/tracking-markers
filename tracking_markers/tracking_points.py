@@ -279,7 +279,11 @@ def track_points(
 def main():
     parser = argparse.ArgumentParser(
         prog="tracking_points.py",
-        description="Track markers in a video file using cross-correlation of a template around the markers."
+        description="Track virtual markers (points) in a video file using digital image correlation. "
+        "The user can manually select the markers in the first frame, or provide a file with the initial positions. "
+        "The markers are tracked by extracting a square template around the markers and computing the cross-correlation between two consecutive frames. "
+        "The tracked markers history can be saved to a .npy file. "
+        "An animation of the tracked video can also be saved.",
     )
     parser.add_argument("video_path", type=str, help="Path to the video file.")
     parser.add_argument("-r", "--frame_range", type=int, default=(0, -1), nargs=2,
