@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 import cv2
 import numpy as np
 from tracking_markers.utils import find_markers, search_window_size_default, marker_template_size_default, upscaling_factor_default, step_size_default
@@ -8,19 +8,19 @@ from tqdm import tqdm
 
 
 def select_markers(
-        video_path: str,
-        frame=0,
-        ROI_X=(0, -1),
-        ROI_Y=(0, -1),
-        search_window_size=search_window_size_default,
-        marker_template_size=marker_template_size_default,) -> np.ndarray:
+        video_path: Union[str, Path],
+        frame: int = 0,
+        ROI_X: Tuple[int, int] = (0, -1),
+        ROI_Y: Tuple[int, int] = (0, -1),
+        search_window_size: int = search_window_size_default,
+        marker_template_size: int = marker_template_size_default,) -> np.ndarray:
     """Manually select markers in a video.
 
     Args:
-        video_path (str): Path to the video file.
+        video_path (Union[str, Path]): Path to the video file.
         frame (int, optional): Frame number to select the markers from. Defaults to 0.
-        ROI_X (tuple[int, int], optional): ROI in the x-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
-        ROI_Y (tuple[int, int], optional): ROI in the y-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
+        ROI_X (Tuple[int, int], optional): ROI in the x-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
+        ROI_Y (Tuple[int, int], optional): ROI in the y-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
         search_window_size (int, optional): Size of the search window. Default is 40px.
         marker_template_size (int, optional): Size of the marker template. Default is 20px.
 
@@ -28,7 +28,8 @@ def select_markers(
         np.ndarray: Array of shape (n_markers, 2) containing the marker positions in pixels.
     """
 
-    cap = cv2.VideoCapture(video_path)
+    video_path = Path(video_path) if isinstance(video_path, str) else video_path
+    cap = cv2.VideoCapture(str(video_path))
     cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
     _, frame = cap.read()
     # Flip y-axis in image to match physical frame.
@@ -85,29 +86,29 @@ def select_markers(
 def track_points(
         video_path: Union[str, Path],
         markers: np.ndarray,
-        ROI_X=(0, -1),
-        ROI_Y=(0, -1),
-        frame_range=(0, -1),
-        step_size=step_size_default,
+        ROI_X: Tuple[int, int] = (0, -1),
+        ROI_Y: Tuple[int, int] = (0, -1),
+        frame_range: Tuple[int, int] = (0, -1),
+        step_size: int = step_size_default,
         # Parameters for cross-correlation
-        search_window_size=search_window_size_default,
-        marker_template_size=marker_template_size_default,
-        upscaling_factor=upscaling_factor_default,
-        template_update_rate=0,
-        search_window_update_rate=1,
+        search_window_size: int = search_window_size_default,
+        marker_template_size: int = marker_template_size_default,
+        upscaling_factor: int = upscaling_factor_default,
+        template_update_rate: int = 0,
+        search_window_update_rate: int = 1,
         # Parameters for visualization
-        show_progress_bar=True,
-        show_tracked_frame=True,
-        show_tracked_box=False,
+        show_progress_bar: bool = True,
+        show_tracked_frame: bool = True,
+        show_tracked_box: bool = False,
         save_animation_path: Optional[Union[str, Path]] = None,) -> np.ndarray:
     """Track markers in a video.
 
     Args:
         video_path (Union[str, Path]): Path to the video file.
         markers (np.ndarray): Array of shape (n_markers, 2) containing the initial marker positions in pixels.
-        ROI_X (tuple[int, int], optional): ROI in the x-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
-        ROI_Y (tuple[int, int], optional): ROI in the y-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
-        frame_range (tuple, optional): Range of frames to track. Defaults to (0, -1).
+        ROI_X (Tuple[int, int], optional): ROI in the x-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
+        ROI_Y (Tuple[int, int], optional): ROI in the y-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
+        frame_range (Tuple[int, int], optional): Range of frames to track. Defaults to (0, -1).
         step_size (int, optional): Step size for tracking. Defaults to 1 i.e. each frame is tracked.
         search_window_size (int, optional): Size of the search window. Default is 40px.
         marker_template_size (int, optional): Size of the marker template. Default is 20px.
