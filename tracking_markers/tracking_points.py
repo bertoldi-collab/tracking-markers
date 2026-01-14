@@ -7,7 +7,13 @@ from pathlib import Path
 from tqdm import tqdm
 
 
-def select_markers(video_path: str, frame=0, ROI_X=(0, -1), ROI_Y=(0, -1)):
+def select_markers(
+        video_path: str,
+        frame=0,
+        ROI_X=(0, -1),
+        ROI_Y=(0, -1),
+        search_window_size=search_window_size_default,
+        marker_template_size=marker_template_size_default,) -> np.ndarray:
     """Manually select markers in a video.
 
     Args:
@@ -15,6 +21,8 @@ def select_markers(video_path: str, frame=0, ROI_X=(0, -1), ROI_Y=(0, -1)):
         frame (int, optional): Frame number to select the markers from. Defaults to 0.
         ROI_X (tuple[int, int], optional): ROI in the x-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
         ROI_Y (tuple[int, int], optional): ROI in the y-direction. If -1 is provided, the whole frame will be used. Defaults to (0, -1).
+        search_window_size (int, optional): Size of the search window. Default is 40px.
+        marker_template_size (int, optional): Size of the marker template. Default is 20px.
 
     Returns:
         np.ndarray: Array of shape (n_markers, 2) containing the marker positions in pixels.
@@ -38,6 +46,28 @@ def select_markers(video_path: str, frame=0, ROI_X=(0, -1), ROI_Y=(0, -1)):
         if event == cv2.EVENT_LBUTTONDOWN:
             markers.append((x, y))
             cv2.drawMarker(frame, (x, y), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
+
+            # Draw the search window box
+            top_left = (
+                int(x - search_window_size // 2),
+                int(y - search_window_size // 2),
+            )
+            bottom_right = (
+                int(x + search_window_size // 2),
+                int(y + search_window_size // 2),
+            )
+            cv2.rectangle(frame, top_left, bottom_right, (255, 0, 0), 2)
+
+            # Draw the marker template box
+            top_left = (
+                int(x - marker_template_size // 2),
+                int(y - marker_template_size // 2),
+            )
+            bottom_right = (
+                int(x + marker_template_size // 2),
+                int(y + marker_template_size // 2),
+            )
+            cv2.rectangle(frame, top_left, bottom_right, (0, 0, 255), 2)
 
     cv2.namedWindow('Select Markers', cv2.WINDOW_NORMAL)
     cv2.setMouseCallback('Select Markers', mouse_callback)
@@ -273,7 +303,14 @@ def main():
         markers = np.load(args.markers_path)
     else:
         # Manually select the markers
-        markers = select_markers(args.video_path, frame=args.frame_range[0], ROI_X=args.ROI_X, ROI_Y=args.ROI_Y)
+        markers = select_markers(
+            args.video_path,
+            frame=args.frame_range[0],
+            ROI_X=args.ROI_X,
+            ROI_Y=args.ROI_Y,
+            search_window_size=args.search_window_size,
+            marker_template_size=args.marker_template_size
+        )
 
     if len(markers) == 0:
         raise ValueError("No markers selected!")
