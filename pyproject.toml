@@ -1,6 +1,6 @@
 [tool.poetry]
 name        = "tracking-markers"
-version     = "0.8.0"
+version     = "0.9.0"
 description = "A humble image tracking code"
 authors     = ["Giovanni Bordiga <gbordiga@seas.harvard.edu>"]
 readme      = "README.md"
