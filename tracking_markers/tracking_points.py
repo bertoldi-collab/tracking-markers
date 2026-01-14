@@ -16,6 +16,8 @@ def select_markers(
         marker_template_size: int = marker_template_size_default,) -> np.ndarray:
     """Manually select markers in a video.
 
+    Left click adds a marker. Shift + Left click removes the nearest marker.
+
     Args:
         video_path (Union[str, Path]): Path to the video file.
         frame (int, optional): Frame number to select the markers from. Defaults to 0.
@@ -42,38 +44,52 @@ def select_markers(
 
     # Collect marker positions from the user by clicking on the image
     markers = []
+    clean_frame = frame.copy()
 
     def mouse_callback(event, x, y, flags, param):
-        if event == cv2.EVENT_LBUTTONDOWN:
+        if event == cv2.EVENT_LBUTTONDOWN and (flags & cv2.EVENT_FLAG_SHIFTKEY):
+            if markers:
+                # Find the nearest marker
+                distances = [np.sqrt((mx - x)**2 + (my - y)**2) for mx, my in markers]
+                min_idx = np.argmin(distances)
+                if distances[min_idx] < 20:  # Threshold for selection
+                    markers.pop(int(min_idx))
+        elif event == cv2.EVENT_LBUTTONDOWN:
             markers.append((x, y))
-            cv2.drawMarker(frame, (x, y), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
+        else:
+            return
+
+        # Redraw the frame
+        frame[:] = clean_frame
+        for mx, my in markers:
+            cv2.drawMarker(frame, (mx, my), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
 
             # Draw the search window box
             top_left = (
-                int(x - search_window_size // 2),
-                int(y - search_window_size // 2),
+                int(mx - search_window_size // 2),
+                int(my - search_window_size // 2),
             )
             bottom_right = (
-                int(x + search_window_size // 2),
-                int(y + search_window_size // 2),
+                int(mx + search_window_size // 2),
+                int(my + search_window_size // 2),
             )
             cv2.rectangle(frame, top_left, bottom_right, (255, 0, 0), 2)
 
             # Draw the marker template box
             top_left = (
-                int(x - marker_template_size // 2),
-                int(y - marker_template_size // 2),
+                int(mx - marker_template_size // 2),
+                int(my - marker_template_size // 2),
             )
             bottom_right = (
-                int(x + marker_template_size // 2),
-                int(y + marker_template_size // 2),
+                int(mx + marker_template_size // 2),
+                int(my + marker_template_size // 2),
             )
             cv2.rectangle(frame, top_left, bottom_right, (0, 0, 255), 2)
 
     cv2.namedWindow('Select Markers', cv2.WINDOW_NORMAL)
     cv2.setMouseCallback('Select Markers', mouse_callback)
 
-    print("Select markers by clicking on the image. Press 'q' to finish.")
+    print("Select markers by clicking on the image (Left click: Add, Shift+Left click: Remove). Press 'q' to finish.")
     while True:
         cv2.imshow('Select Markers', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
