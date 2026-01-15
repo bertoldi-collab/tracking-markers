@@ -1,7 +1,14 @@
 from typing import Optional, Tuple, Union
 import cv2
 import numpy as np
-from tracking_markers.utils import find_markers, search_window_size_default, marker_template_size_default, upscaling_factor_default, step_size_default
+from tracking_markers.utils import (
+    find_markers,
+    search_window_size_default,
+    marker_template_size_default,
+    upscaling_factor_default,
+    step_size_default,
+    marker_size_fraction_default
+)
 import argparse
 from pathlib import Path
 from tqdm import tqdm
@@ -42,6 +49,9 @@ def select_markers(
     ROI_XY = (ROI_X, flipped_ROI_Y)
     frame = frame[ROI_XY[1][0]: ROI_XY[1][1], ROI_XY[0][0]: ROI_XY[0][1]]
 
+    # Marker size is a fixed fraction of the window size
+    marker_size = max(1, int(max(frame.shape[:2]) * marker_size_fraction_default))
+
     # Collect marker positions from the user by clicking on the image
     markers = []
     clean_frame = frame.copy()
@@ -62,7 +72,7 @@ def select_markers(
         # Redraw the frame
         frame[:] = clean_frame
         for mx, my in markers:
-            cv2.drawMarker(frame, (mx, my), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
+            cv2.drawMarker(frame, (mx, my), (0, 255, 0), cv2.MARKER_CROSS, marker_size, 2)
 
             # Draw the search window box
             top_left = (
@@ -164,6 +174,9 @@ def track_points(
     ROI_XY = (ROI_X, flipped_ROI_Y)
     frame = frame[ROI_XY[1][0]: ROI_XY[1][1], ROI_XY[0][0]: ROI_XY[0][1]]
 
+    # Marker size is a fixed fraction of the window size
+    marker_size = max(1, int(max(frame.shape[:2]) * marker_size_fraction_default))
+
     video_writer = None
     if save_animation_path is not None:
         # Ensure the output directory exists
@@ -228,7 +241,8 @@ def track_points(
                 if show_tracked_frame or (video_writer is not None):
                     # Draw the markers on the frame
                     for marker_position in current_markers:
-                        cv2.drawMarker(frame, marker_position.astype(np.int32), (0, 255, 0), cv2.MARKER_CROSS, 10, 2)
+                        cv2.drawMarker(frame, marker_position.astype(np.int32),
+                                       (0, 255, 0), cv2.MARKER_CROSS, marker_size, 2)
                         if show_tracked_box:
                             # Draw the search window box
                             top_left = (

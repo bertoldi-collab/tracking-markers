@@ -8,6 +8,7 @@ step_size_default = 1  # Step size for tracking. Defaults to 1 i.e. each frame i
 search_window_size_default = 40  # Size of the search window. Default is 40px.
 marker_template_size_default = 20  # Size of the marker template. Default is 20px.
 upscaling_factor_default = 5  # Upscaling factor for the marker template and search window. Default is 5.
+marker_size_fraction_default = 0.005  # Fraction of the window size for drawn markers. Default is 0.005.
 
 
 def find_markers(
