@@ -21,7 +21,7 @@ def select_markers(
         ROI_Y: Tuple[int, int] = (0, -1),
         search_window_size: int = search_window_size_default,
         marker_template_size: int = marker_template_size_default,) -> np.ndarray:
-    """Manually select markers in a video.
+    """Manually select virtual markers in a video.
 
     Left click adds a marker. Shift + Left click removes the nearest marker.
 
