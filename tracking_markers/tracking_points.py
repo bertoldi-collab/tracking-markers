@@ -99,7 +99,7 @@ def select_markers(
     cv2.namedWindow('Select Markers', cv2.WINDOW_NORMAL)
     cv2.setMouseCallback('Select Markers', mouse_callback)
 
-    print("Select markers by clicking on the image (Left click: Add, Shift+Left click: Remove). Press 'q' to finish.")
+    print("Select markers by clicking on the image (Left click = Add, Shift + Left click = Remove). Press 'q' to finish.")
     while True:
         cv2.imshow('Select Markers', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
