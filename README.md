@@ -6,7 +6,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/tracking-markers?labelColor=34495e)
 [![Pepy Total Downloads](https://img.shields.io/pepy/dt/tracking-markers?labelColor=34495e)](https://pepy.tech/projects/tracking-markers)
 [![GitHub license](https://img.shields.io/github/license/bertoldi-collab/tracking-markers?labelColor=34495e)](https://github.com/bertoldi-collab/tracking-markers/blob/main/LICENSE)
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fbertoldi-collab%2Ftracking-markers&count_bg=%2327AE60&title_bg=%2334495E&icon=github.svg&icon_color=%23E7E7E7&title=Hits&edge_flat=false)](https://hits.seeyoufarm.com)
+![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2Fbertoldi-collab%2Ftracking-markers&label=Visits&icon=heart-fill&color=%232ecc71&message=&style=flat&tz=UTC)
 
 This is a humble image tracking code.
 It is humble because it does what it can.
