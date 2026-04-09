@@ -6,3 +6,5 @@
 
 **Latest report PDF**: [report.pdf](https://github.com/bertoldi-collab/tracking-markers/raw/github-repo-stats/bertoldi-collab/tracking-markers/latest-report/report.pdf)
 
+
+**Latest report HTML via GitHub pages**: [report.html](https://bertoldi-collab.github.io/tracking-markers/bertoldi-collab/tracking-markers/latest-report/report.html)
