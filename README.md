@@ -62,8 +62,22 @@ The main module is [`tracking_points.py`](tracking_markers/tracking_points.py) d
 These functions can be used independently.
 The file [`tracking_points.py`](tracking_markers/tracking_points.py) can also be used as a script.
 
-## Some info
+## Additional info
 
 - It is based on the [OpenCV](https://opencv.org/) library.
 - Allows for markers to be manually selected or an `np.ndarray` of markers can be loaded from a file.
 - Works best on high-contrast videos.
+
+## Citation
+
+If you use this code in your research or any other work, please cite it as follows:
+
+```bibtex
+@misc{bordiga2023humble,
+    title        = {A humble image tracking code},
+    author       = {Bordiga, Giovanni},
+    year         = {2023},
+    howpublished = {\url{https://github.com/bertoldi-collab/tracking-markers}},
+    note         = {Bertoldi Group}
+}
+```
