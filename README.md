@@ -17,7 +17,7 @@ It is humble because it does what it can.
 
 ## Why
 
-Unlike [typical tracking software](https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html), this code does _not_ require any markers to be placed in the scene.
+Unlike [typical tracking software](https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html), this code does _not_ require any _physical_ markers to be placed in the scene.
 It can track arbitrary high-contrast points in the video.
 The points to be tracked act as virtual markers that are manually selected by the user or loaded from a file.
 This makes it suitable for tracking points in videos where placing physical markers is not possible or practical.
