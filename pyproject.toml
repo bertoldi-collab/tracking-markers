@@ -1,6 +1,6 @@
 [project]
 name = "tracking-markers"
-version = "0.9.0"
+version = "0.10.0"
 description = "A humble image tracking code"
 authors = [{ name = "Giovanni Bordiga", email = "gbordiga@seas.harvard.edu" }]
 readme = "README.md"
@@ -23,6 +23,10 @@ tracking-markers = "tracking_markers.tracking_points:main"
 
 [dependency-groups]
 dev = ["pytest>=7.4.3,<8"]
+
+[tool.uv]
+keyring-provider = "subprocess"
+publish-url = "https://upload.pypi.org/legacy/"
 
 [tool.uv.build-backend]
 module-root = ""
