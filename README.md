@@ -68,6 +68,17 @@ The file [`tracking_points.py`](tracking_markers/tracking_points.py) can also be
 - Allows for markers to be manually selected or an `np.ndarray` of markers can be loaded from a file.
 - Works best on high-contrast videos.
 
+## Development
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management and builds.
+
+```bash
+uv sync            # create the virtual environment and install dependencies
+uv run pytest      # run the test suite
+uv build           # build the sdist and wheel into dist/
+uv publish         # publish to PyPI
+```
+
 ## Citation
 
 If you use this code in your research or any other work, please cite it as follows:

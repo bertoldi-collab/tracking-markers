@@ -1,28 +1,32 @@
-[tool.poetry]
-name        = "tracking-markers"
-version     = "0.9.0"
+[project]
+name = "tracking-markers"
+version = "0.9.0"
 description = "A humble image tracking code"
-authors     = ["Giovanni Bordiga <gbordiga@seas.harvard.edu>"]
-readme      = "README.md"
-license     = "MIT"
-homepage    = "https://github.com/bertoldi-collab/tracking-markers"
-repository  = "https://github.com/bertoldi-collab/tracking-markers"
-keywords    = ["image-tracking", "opencv"]
-packages    = [{ include = "tracking_markers" }]
+authors = [{ name = "Giovanni Bordiga", email = "gbordiga@seas.harvard.edu" }]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["image-tracking", "opencv"]
+requires-python = ">=3.9,<3.13"
+dependencies = [
+    "numpy>=1.26.1,<2",
+    "opencv-python>=4.8.1.78,<5",
+    "tqdm>=4.67.1,<5",
+]
 
-[tool.poetry.scripts]
+[project.urls]
+Homepage = "https://github.com/bertoldi-collab/tracking-markers"
+Repository = "https://github.com/bertoldi-collab/tracking-markers"
+
+[project.scripts]
 tracking-markers = "tracking_markers.tracking_points:main"
 
-[tool.poetry.dependencies]
-python        = ">=3.9,<3.13"
-numpy         = "^1.26.1"
-opencv-python = "^4.8.1.78"
-tqdm          = "^4.67.1"
+[dependency-groups]
+dev = ["pytest>=7.4.3,<8"]
 
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.3"
+[tool.uv.build-backend]
+module-root = ""
 
 [build-system]
-requires      = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.7,<0.12.0"]
+build-backend = "uv_build"
