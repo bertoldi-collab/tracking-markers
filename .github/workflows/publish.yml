@@ -15,6 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify ref is reachable from main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Commit $GITHUB_SHA (ref $GITHUB_REF) is not reachable from origin/main. Refusing to publish."
+            exit 1
+          fi
       - uses: astral-sh/setup-uv@v8.2.0
       - run: uv run pytest -v
 
