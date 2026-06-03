@@ -10,7 +10,7 @@ ground_truth_path = test_data_dir / "ground_truth.npy"
 
 
 def test_version():
-    assert __version__ == '0.10.0'
+    assert __version__ == '0.11.0'
 
 
 def generate_synthetic_data():
