@@ -1,9 +1,9 @@
 from typing import Optional, Tuple, Union
 import cv2
 import numpy as np
+from tracking_markers import __version__
 from tracking_markers.utils import (
     find_markers,
-    version_string,
     search_window_size_default,
     marker_template_size_default,
     upscaling_factor_default,
@@ -11,6 +11,8 @@ from tracking_markers.utils import (
     marker_size_fraction_default
 )
 import argparse
+import os
+import sys
 from pathlib import Path
 from tqdm import tqdm
 
@@ -291,6 +293,19 @@ def track_points(
     return markers_history
 
 
+def _version_string():
+    """Build the ``--version`` output, accenting the version number in cyan on a TTY.
+
+    Color is disabled when stdout is not a terminal (e.g. piped) or when the
+    NO_COLOR environment variable is set, matching tools like ``uv``.
+    """
+    version = __version__
+    if sys.stdout.isatty() and os.environ.get("NO_COLOR") is None:
+        cyan, reset = "\033[36m", "\033[0m"
+        version = f"{cyan}{version}{reset}"
+    return f"tracking-markers {version}"
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="tracking_points.py",
@@ -300,7 +315,7 @@ def main():
         "The tracked markers history can be saved to a .npy file. "
         "An animation of the tracked video can also be saved.",
     )
-    parser.add_argument("-v", "--version", action="version", version=version_string())
+    parser.add_argument("-v", "--version", action="version", version=_version_string())
     parser.add_argument("video_path", type=str, help="Path to the video file.")
     parser.add_argument("-r", "--frame_range", type=int, default=(0, -1), nargs=2,
                         help="Range of frames to track. If 0 -1 is provided, the whole video will be used.")
