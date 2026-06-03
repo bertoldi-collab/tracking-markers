@@ -47,9 +47,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
-            --title "$GITHUB_REF_NAME" \
-            --target "$GITHUB_SHA" \
-            --generate-notes \
-            --draft \
-            dist/tracking_markers-*.whl dist/tracking_markers-*.tar.gz
+          TITLE="Tracking markers - $GITHUB_REF_NAME"
+          NOTES_FILE=".github/release-notes/${GITHUB_REF_NAME}.md"
+          if [ -f "$NOTES_FILE" ]; then
+            gh release create "$GITHUB_REF_NAME" \
+              --title "$TITLE" \
+              --target "$GITHUB_SHA" \
+              --notes-file "$NOTES_FILE" \
+              --draft \
+              dist/tracking_markers-*.whl dist/tracking_markers-*.tar.gz
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              --title "$TITLE" \
+              --target "$GITHUB_SHA" \
+              --generate-notes \
+              --draft \
+              dist/tracking_markers-*.whl dist/tracking_markers-*.tar.gz
+          fi
