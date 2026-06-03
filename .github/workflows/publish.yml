@@ -1,0 +1,66 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify ref is reachable from main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Commit $GITHUB_SHA (ref $GITHUB_REF) is not reachable from origin/main. Refusing to publish."
+            exit 1
+          fi
+      - uses: astral-sh/setup-uv@v8.2.0
+      - run: uv run pytest -v
+
+  publish:
+    name: Build and publish to PyPI
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/tracking-markers
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v8.2.0
+      - run: uv build
+      - run: uv publish --trusted-publishing automatic
+      - name: Create draft GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Tracking markers - $GITHUB_REF_NAME"
+          NOTES_FILE=".github/release-notes/${GITHUB_REF_NAME}.md"
+          if [ -f "$NOTES_FILE" ]; then
+            gh release create "$GITHUB_REF_NAME" \
+              --title "$TITLE" \
+              --target "$GITHUB_SHA" \
+              --notes-file "$NOTES_FILE" \
+              --draft \
+              dist/tracking_markers-*.whl dist/tracking_markers-*.tar.gz
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              --title "$TITLE" \
+              --target "$GITHUB_SHA" \
+              --generate-notes \
+              --draft \
+              dist/tracking_markers-*.whl dist/tracking_markers-*.tar.gz
+          fi
