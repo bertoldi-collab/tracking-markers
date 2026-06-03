@@ -54,13 +54,11 @@ jobs:
               --title "$TITLE" \
               --target "$GITHUB_SHA" \
               --notes-file "$NOTES_FILE" \
-              --draft \
-              dist/tracking_markers-*.whl dist/tracking_markers-*.tar.gz
+              --draft
           else
             gh release create "$GITHUB_REF_NAME" \
               --title "$TITLE" \
               --target "$GITHUB_SHA" \
               --generate-notes \
-              --draft \
-              dist/tracking_markers-*.whl dist/tracking_markers-*.tar.gz
+              --draft
           fi
