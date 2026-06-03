@@ -1,6 +1,6 @@
 [project]
 name = "tracking-markers"
-version = "0.11.0"
+version = "0.12.0"
 description = "A humble image tracking code"
 authors = [{ name = "Giovanni Bordiga", email = "gbordiga@seas.harvard.edu" }]
 readme = "README.md"
