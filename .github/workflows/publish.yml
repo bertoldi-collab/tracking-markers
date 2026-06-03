@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Publish to PyPI and create GitHub Release
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
       - run: uv run pytest -v
 
   publish:
-    name: Build and publish to PyPI
+    name: Build, publish to PyPI, and create GitHub Release
     needs: test
     runs-on: ubuntu-latest
     environment:
