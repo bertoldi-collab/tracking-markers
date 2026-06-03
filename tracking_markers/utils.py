@@ -1,5 +1,23 @@
+import os
+import sys
+
 import cv2
 import numpy as np
+
+from tracking_markers import __version__
+
+
+def version_string():
+    """Build the ``--version`` output, accenting the version number in cyan on a TTY.
+
+    Color is disabled when stdout is not a terminal (e.g. piped) or when the
+    NO_COLOR environment variable is set, matching tools like ``uv``.
+    """
+    version = __version__
+    if sys.stdout.isatty() and os.environ.get("NO_COLOR") is None:
+        cyan, reset = "\033[36m", "\033[0m"
+        version = f"{cyan}{version}{reset}"
+    return f"tracking-markers {version}"
 
 
 # Set default parameter values

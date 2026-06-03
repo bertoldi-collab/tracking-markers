@@ -1,9 +1,9 @@
 from typing import Optional, Tuple, Union
 import cv2
-from tracking_markers import __version__
 import numpy as np
 from tracking_markers.utils import (
     find_markers,
+    version_string,
     search_window_size_default,
     marker_template_size_default,
     upscaling_factor_default,
@@ -300,7 +300,7 @@ def main():
         "The tracked markers history can be saved to a .npy file. "
         "An animation of the tracked video can also be saved.",
     )
-    parser.add_argument("-v", "--version", action="version", version=f"tracking-markers {__version__}")
+    parser.add_argument("-v", "--version", action="version", version=version_string())
     parser.add_argument("video_path", type=str, help="Path to the video file.")
     parser.add_argument("-r", "--frame_range", type=int, default=(0, -1), nargs=2,
                         help="Range of frames to track. If 0 -1 is provided, the whole video will be used.")
